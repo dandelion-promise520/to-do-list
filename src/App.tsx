@@ -1,11 +1,11 @@
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Avatar, Box, Card, Flex, Text, TextField } from "@radix-ui/themes";
+import { Box, Card, Text, TextField } from "@radix-ui/themes";
 import { useState, type ChangeEvent, type KeyboardEvent } from "react";
 
 const App = () => {
-  const [thing, setThing] = useState<string>();
+  const [thing, setThing] = useState<string>("");
 
-  const [list, setList] = useState<string[]>(["吃饭", "睡觉"]);
+  const [list, setList] = useState<string[]>([]);
 
   // Change事件实时绑定输入框的值
   function handleChange(event: ChangeEvent<HTMLInputElement>): void {
@@ -14,8 +14,9 @@ const App = () => {
 
   // onKeyDown事件，提交任务时触发
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
-    if (event.code !== "Enter") return;
-    console.log(thing);
+    if (event.code !== "Enter" || !thing.trim()) return;
+    setList([...list, thing]);
+    setThing("");
   }
 
   return (
@@ -25,6 +26,7 @@ const App = () => {
           placeholder="请输入待办事项"
           size={"3"}
           className="w-full"
+          value={thing}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         >
@@ -34,18 +36,17 @@ const App = () => {
         </TextField.Root>
 
         <Box className="w-full">
-          <Card>
-            <Flex gap="3" align="center">
-              <Box>
-                <Text as="div" size="2" weight="bold">
-                  Teodros Girmay
-                </Text>
-                <Text as="div" size="2" color="gray">
-                  Engineering
-                </Text>
-              </Box>
-            </Flex>
-          </Card>
+          <div className="space-y-2">
+            {list.map((item, index) => (
+              <Card key={index}>
+                <Box>
+                  <Text as="div" size="2" weight="bold">
+                    {item}
+                  </Text>
+                </Box>
+              </Card>
+            ))}
+          </div>
         </Box>
       </div>
     </div>
