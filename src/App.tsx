@@ -1,6 +1,11 @@
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Box, Card, Text, TextField } from "@radix-ui/themes";
-import { useState, type ChangeEvent, type KeyboardEvent } from "react";
+import { MagnifyingGlassIcon, TrashIcon } from "@radix-ui/react-icons";
+import { Box, Card, Flex, IconButton, Text, TextField } from "@radix-ui/themes";
+import {
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+} from "react";
 
 const App = () => {
   const [thing, setThing] = useState<string>("");
@@ -21,6 +26,12 @@ const App = () => {
     setList(newList);
     localStorage.setItem("list", JSON.stringify(newList));
     setThing("");
+  }
+
+  // 删除事项
+  function handleTrash(event: MouseEvent<HTMLButtonElement>) {
+    const id = event.currentTarget.dataset.id;
+    console.log(id);
   }
 
   return (
@@ -44,9 +55,24 @@ const App = () => {
             {list.map((item, index) => (
               <Card key={index}>
                 <Box>
-                  <Text as="div" size="2" weight="bold">
-                    {item}
-                  </Text>
+                  <Flex justify={"between"}>
+                    <Text
+                      as="div"
+                      size="3"
+                      weight="bold"
+                      className="flex items-center"
+                    >
+                      {item}
+                    </Text>
+                    <IconButton
+                      color="crimson"
+                      variant="soft"
+                      data-id={index}
+                      onClick={handleTrash}
+                    >
+                      <TrashIcon width="18" height="18" />
+                    </IconButton>
+                  </Flex>
                 </Box>
               </Card>
             ))}
