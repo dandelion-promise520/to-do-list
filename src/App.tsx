@@ -10,9 +10,14 @@ import {
 const App = () => {
   const [thing, setThing] = useState<string>("");
 
-  const [list, setList] = useState<string[]>(
-    JSON.parse(localStorage.getItem("list") || "")
-  );
+  const [list, setList] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem("list");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
 
   // Change事件实时绑定输入框的值
   function handleChange(event: ChangeEvent<HTMLInputElement>): void {
@@ -52,30 +57,31 @@ const App = () => {
 
         <Box className="w-full">
           <div className="space-y-2">
-            {list.map((item, index) => (
-              <Card key={index}>
-                <Box>
-                  <Flex justify={"between"}>
-                    <Text
-                      as="div"
-                      size="3"
-                      weight="bold"
-                      className="flex items-center"
-                    >
-                      {item}
-                    </Text>
-                    <IconButton
-                      color="crimson"
-                      variant="soft"
-                      data-id={index}
-                      onClick={handleTrash}
-                    >
-                      <TrashIcon width="18" height="18" />
-                    </IconButton>
-                  </Flex>
-                </Box>
-              </Card>
-            ))}
+            {list &&
+              list.map((item, index) => (
+                <Card key={index}>
+                  <Box>
+                    <Flex justify={"between"}>
+                      <Text
+                        as="div"
+                        size="3"
+                        weight="bold"
+                        className="flex items-center"
+                      >
+                        {item}
+                      </Text>
+                      <IconButton
+                        color="crimson"
+                        variant="soft"
+                        data-id={index}
+                        onClick={handleTrash}
+                      >
+                        <TrashIcon width="18" height="18" />
+                      </IconButton>
+                    </Flex>
+                  </Box>
+                </Card>
+              ))}
           </div>
         </Box>
       </div>
