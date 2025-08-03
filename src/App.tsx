@@ -5,7 +5,9 @@ import { useState, type ChangeEvent, type KeyboardEvent } from "react";
 const App = () => {
   const [thing, setThing] = useState<string>("");
 
-  const [list, setList] = useState<string[]>([]);
+  const [list, setList] = useState<string[]>(
+    JSON.parse(localStorage.getItem("list") || "")
+  );
 
   // Change事件实时绑定输入框的值
   function handleChange(event: ChangeEvent<HTMLInputElement>): void {
@@ -15,7 +17,9 @@ const App = () => {
   // onKeyDown事件，提交任务时触发
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
     if (event.code !== "Enter" || !thing.trim()) return;
-    setList([...list, thing]);
+    const newList = [...list, thing];
+    setList(newList);
+    localStorage.setItem("list", JSON.stringify(newList));
     setThing("");
   }
 
