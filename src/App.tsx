@@ -45,7 +45,7 @@ const App = () => {
   }
 
   return (
-    <div className="h-lvh w-full flex items-center justify-center">
+    <div className="h-dvh w-full flex pt-8 justify-center">
       <div className="w-3xl flex flex-col items-center space-y-6">
         <TextField.Root
           placeholder="请输入待办事项"
@@ -75,14 +75,17 @@ const App = () => {
                       >
                         {item.content}
                       </Text>
-                      <IconButton
-                        color="crimson"
-                        variant="soft"
-                        data-id={item.id}
-                        onClick={handleTrash}
-                      >
-                        <TrashIcon width="18" height="18" />
-                      </IconButton>
+                      <div className="flex items-center space-x-2">
+                        <div>{new Date(item.id).toDateString()}</div>
+                        <IconButton
+                          color="crimson"
+                          variant="soft"
+                          data-id={item.id}
+                          onClick={handleTrash}
+                        >
+                          <TrashIcon width="18" height="18" />
+                        </IconButton>
+                      </div>
                     </Flex>
                   </Box>
                 </Card>
