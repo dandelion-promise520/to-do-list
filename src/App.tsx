@@ -7,10 +7,12 @@ import {
   type MouseEvent,
 } from "react";
 
-const App = () => {
-  const [thing, setThing] = useState<string>("");
+type InterList = Array<{ id: number; content: string }>;
 
-  const [list, setList] = useState<string[]>(() => {
+const App = () => {
+  const [things, setThings] = useState<string>("");
+
+  const [list, setList] = useState<InterList>(() => {
     try {
       const stored = localStorage.getItem("list");
       return stored ? JSON.parse(stored) : [];
@@ -21,22 +23,25 @@ const App = () => {
 
   // Change事件实时绑定输入框的值
   function handleChange(event: ChangeEvent<HTMLInputElement>): void {
-    setThing(event.target.value);
+    setThings(event.target.value);
   }
 
   // onKeyDown事件，提交任务时触发
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
-    if (event.code !== "Enter" || !thing.trim()) return;
-    const newList = [...list, thing];
+    if (event.code !== "Enter" || !things.trim()) return;
+    const newList = [...list, { id: Date.now(), content: things }];
     setList(newList);
     localStorage.setItem("list", JSON.stringify(newList));
-    setThing("");
+    setThings("");
   }
 
   // 删除事项
   function handleTrash(event: MouseEvent<HTMLButtonElement>) {
-    const id = event.currentTarget.dataset.id;
-    console.log(id);
+    const id = Number(event.currentTarget.dataset.id);
+    if (!id) return;
+    const res = list.filter((item) => id !== item.id);
+    setList(res);
+    localStorage.setItem("list", JSON.stringify(res));
   }
 
   return (
@@ -46,7 +51,7 @@ const App = () => {
           placeholder="请输入待办事项"
           size={"3"}
           className="w-full"
-          value={thing}
+          value={things}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         >
@@ -58,8 +63,8 @@ const App = () => {
         <Box className="w-full">
           <div className="space-y-2">
             {list &&
-              list.map((item, index) => (
-                <Card key={index}>
+              list.map((item) => (
+                <Card key={item.id}>
                   <Box>
                     <Flex justify={"between"}>
                       <Text
@@ -68,12 +73,12 @@ const App = () => {
                         weight="bold"
                         className="flex items-center"
                       >
-                        {item}
+                        {item.content}
                       </Text>
                       <IconButton
                         color="crimson"
                         variant="soft"
-                        data-id={index}
+                        data-id={item.id}
                         onClick={handleTrash}
                       >
                         <TrashIcon width="18" height="18" />
